@@ -39,7 +39,6 @@ async function getRandomBoardWithRandomColumn(boardsArr) {
       ...(await getRandomBoardWithRandomColumn(await getBoardsIds()))
     })
   );
-  console.log(DB);
 })();
 
 module.exports = DB;
