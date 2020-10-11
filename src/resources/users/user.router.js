@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const User = require('./user.model');
 const usersService = require('./user.service');
+const tasksService = require('../tasks/task.service');
 
 router.route('/').get(async (req, res) => {
   const users = await usersService.getAll();
@@ -42,6 +43,7 @@ router.route('/:id').delete(async (req, res) => {
   try {
     const { id } = req.params;
     await usersService.remove(id);
+    await tasksService.reassigned(id);
 
     res.status(204).send();
   } catch (error) {
