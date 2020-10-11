@@ -38,7 +38,7 @@ router.route('/').post(async (req, res) => {
   }
 });
 
-router.route('/:id').put(async (req, res) => {
+router.route('/:taskId').put(async (req, res) => {
   try {
     const { title, order, description, userId, columnId } = req.body;
     const { boardId, taskId } = req.params;
@@ -51,6 +51,17 @@ router.route('/:id').put(async (req, res) => {
     });
 
     res.send(Task.toResponse(task));
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
+
+router.route('/:taskId').delete(async (req, res) => {
+  try {
+    const { boardId, taskId } = req.params;
+    await taskService.remove(boardId, taskId);
+
+    res.status(204).send();
   } catch (error) {
     res.status(404).send(error.message);
   }

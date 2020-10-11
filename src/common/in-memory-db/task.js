@@ -26,11 +26,12 @@ const getTask = async (boardId, taskId) => {
 
 const createTask = async task => {
   DB.task.push(task);
-  return getTask(task.id);
+
+  return getTask(task.boardId, task.id);
 };
 
 const updateTask = async (boardId, taskId, updates) => {
-  const index = [...DB.task].findIndex(
+  const index = DB.task.findIndex(
     item => item.boardId === boardId && item.id === taskId
   );
 
@@ -41,15 +42,41 @@ const updateTask = async (boardId, taskId, updates) => {
   }
 
   DB.task[index] = { ...DB.task[index], ...updates };
-  return getTask(taskId);
+  return getTask(boardId, taskId);
 };
 
-const removeTask = async id => {};
+const removeTask = async (boardId, taskId) => {
+  const index = DB.task.findIndex(
+    item => item.boardId === boardId && item.id === taskId
+  );
+
+  if (index === -1) {
+    throw new Error(
+      `The task with id: ${taskId} on board with id: ${boardId} was not found!`
+    );
+  }
+
+  DB.task.splice(index, 1);
+};
+
+const reassignedUser = async userId => {
+  DB.task.forEach((item, index) => {
+    if (item.userId === userId) {
+      DB.task[index].userId = null;
+    }
+  });
+};
+
+const removeBoardTasks = boardId => {
+  DB.task = DB.task.filter(item => item.boardId !== boardId);
+};
 
 module.exports = {
   getAllTasks,
   getTask,
   createTask,
   updateTask,
-  removeTask
+  removeTask,
+  reassignedUser,
+  removeBoardTasks
 };
