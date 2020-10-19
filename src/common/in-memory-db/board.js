@@ -6,7 +6,7 @@ const getBoard = async id => {
   const board = [...DB.board].filter(item => item.id === id)[0];
 
   if (!board) {
-    throw new Error(`The board with id: ${id} was not found!`);
+    return null;
   }
 
   return board;
@@ -21,7 +21,7 @@ const updateBoard = async (id, { columns, ...updates }) => {
   const index = DB.board.findIndex(item => item.id === id);
 
   if (index === -1) {
-    throw new Error(`The board with id: ${id} was not found!`);
+    return null;
   }
 
   const columnIndex = DB.board[index].columns.findIndex(
@@ -29,9 +29,7 @@ const updateBoard = async (id, { columns, ...updates }) => {
   );
 
   if (columnIndex === -1) {
-    throw new Error(
-      `The column with id: ${columns[0].id} in board with id: ${id} was not found!`
-    );
+    return null;
   }
 
   DB.board[index] = {
@@ -51,10 +49,10 @@ const removeBoard = async id => {
   const index = DB.board.findIndex(item => item.id === id);
 
   if (index === -1) {
-    throw new Error(`The board with id: ${id} was not found!`);
+    return null;
   }
 
-  DB.board.splice(index, 1);
+  return DB.board.splice(index, 1);
 };
 
 const getBoardsIds = async () => [...DB.board].map(it => it.id);
@@ -63,7 +61,7 @@ const getColumnsIds = async boardId => {
   const index = DB.board.findIndex(item => item.id === boardId);
 
   if (index === -1) {
-    throw new Error(`The board with id: ${boardId} was not found!`);
+    return null;
   }
 
   return [...DB.board][index].columns.map(it => it.id);

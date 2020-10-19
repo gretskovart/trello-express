@@ -5,10 +5,6 @@ const getAllUsers = async () => [...DB.user];
 const getUser = async id => {
   const user = [...DB.user].filter(item => item.id === id)[0];
 
-  if (!user) {
-    throw new Error(`The user with id: ${id} was not found!`);
-  }
-
   return user;
 };
 
@@ -21,7 +17,7 @@ const updateUser = async (id, updates) => {
   const index = DB.user.findIndex(item => item.id === id);
 
   if (index === -1) {
-    throw new Error(`The user with id: ${id} was not found!`);
+    return null;
   }
 
   DB.user[index] = { ...DB.user[index], ...updates };
@@ -33,10 +29,10 @@ const removeUser = async id => {
   const index = DB.user.findIndex(item => item.id === id);
 
   if (index === -1) {
-    throw new Error(`The user with id: ${id} was not found!`);
+    return null;
   }
 
-  DB.user.splice(index, 1);
+  return DB.user.splice(index, 1);
 };
 
 const getUsersIds = async () => [...DB.user].map(it => it.id);

@@ -4,7 +4,7 @@ const getAllTasks = async id => {
   const tasks = [...DB.task].filter(item => item.boardId === id);
 
   if (!tasks) {
-    throw new Error(`The tasks on board with id: ${id} were not found!`);
+    return null;
   }
 
   return tasks;
@@ -16,9 +16,7 @@ const getTask = async (boardId, taskId) => {
   )[0];
 
   if (!task) {
-    throw new Error(
-      `The task with id: ${taskId} on board with id: ${boardId} was not found!`
-    );
+    return null;
   }
 
   return task;
@@ -36,9 +34,7 @@ const updateTask = async (boardId, taskId, updates) => {
   );
 
   if (index === -1) {
-    throw new Error(
-      `The task with id: ${taskId} on board with id: ${boardId} was not found!`
-    );
+    return null;
   }
 
   DB.task[index] = { ...DB.task[index], ...updates };
@@ -51,12 +47,10 @@ const removeTask = async (boardId, taskId) => {
   );
 
   if (index === -1) {
-    throw new Error(
-      `The task with id: ${taskId} on board with id: ${boardId} was not found!`
-    );
+    return null;
   }
 
-  DB.task.splice(index, 1);
+  return DB.task.splice(index, 1);
 };
 
 const reassignedUser = async userId => {
