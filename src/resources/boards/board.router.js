@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { NO_CONTENT } = require('http-status-codes');
 const Board = require('./board.model');
 const boardsService = require('./board.service');
 const tasksService = require('../tasks/task.service');
@@ -9,57 +10,47 @@ router.route('/').get(async (req, res) => {
   res.send(users.map(Board.toResponse));
 });
 
-router.route('/:id').get(async (req, res) => {
+router.route('/:id').get(async (req, res, next) => {
   try {
     const { id } = req.params;
     const board = await boardsService.get(id);
 
     res.json(Board.toResponse(board));
   } catch (error) {
-    res.status(404).send(error.message);
+    return next(error);
   }
 });
 
-router.route('/').post(async (req, res) => {
-  const { title, columns } = req.body;
-  const board = await boardsService.create(
-    new Board({
-      title,
-      columns: columns.map(it => ({ title: it.title, order: it.order }))
-    })
-  );
-
-  res.send(Board.toResponse(board));
-});
-
-router.route('/:id').put(async (req, res) => {
+router.route('/').post(async (req, res, next) => {
   try {
-    const { title, columns } = req.body;
-    const { id } = req.params;
-    const board = await boardsService.update(id, {
-      title,
-      columns: columns.map(it => ({
-        id: it.id,
-        title: it.title,
-        order: it.order
-      }))
-    });
+    const board = await boardsService.create(req.body);
 
     res.send(Board.toResponse(board));
   } catch (error) {
-    res.status(404).send(error.message);
+    return next(error);
   }
 });
 
-router.route('/:id').delete(async (req, res) => {
+router.route('/:id').put(async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const board = await boardsService.update(id, req.body);
+
+    res.send(Board.toResponse(board));
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.route('/:id').delete(async (req, res, next) => {
   try {
     const { id } = req.params;
     await boardsService.remove(id);
     await tasksService.removeAll(id);
 
-    res.status(204).send();
+    res.status(NO_CONTENT).send();
   } catch (error) {
-    res.status(404).send(error.message);
+    return next(error);
   }
 });
 
