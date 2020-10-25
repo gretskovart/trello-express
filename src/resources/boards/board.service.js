@@ -1,7 +1,7 @@
 const createError = require('http-errors');
 const { BAD_REQUEST } = require('http-status-codes');
 const Board = require('./board.model');
-const boardsRepo = require('./board.memory.repository');
+const boardsRepo = require('./board.db.repository');
 
 const getAll = () => boardsRepo.getAll();
 const get = id => boardsRepo.get(id);
