@@ -1,7 +1,7 @@
 const createError = require('http-errors');
 const { BAD_REQUEST } = require('http-status-codes');
 const User = require('./user.model');
-const usersRepo = require('./user.memory.repository');
+const usersRepo = require('./user.db.repository');
 
 const getAll = () => usersRepo.getAll();
 const get = id => usersRepo.get(id);

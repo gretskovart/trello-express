@@ -1,10 +1,10 @@
 const createError = require('http-errors');
 const { NOT_FOUND } = require('http-status-codes');
-const DB = require('../../common/in-memory-db');
+const Board = require('./board.model');
 
-const getAll = async () => DB.getAllBoards();
+const getAll = async () => Board.find({});
 const get = async id => {
-  const board = await DB.getBoard(id);
+  const board = await Board.findById(id);
 
   if (!board) {
     throw createError(
@@ -15,21 +15,27 @@ const get = async id => {
 
   return board;
 };
-const create = async board => DB.createBoard(board);
+const create = async board => Board.create(board);
 const update = async (id, updates) => {
-  const board = await DB.updateBoard(id, updates);
+  const board = await Board.findByIdAndUpdate(
+    id,
+    { $set: Board.fromRequest(updates) },
+    {
+      new: true
+    }
+  );
 
   if (!board) {
     throw createError(
       NOT_FOUND,
-      `Error: the board with id: ${id} or column with id: ${updates.columns[0].id} was not found!`
+      `Error: the board with id: ${id} was not found!`
     );
   }
 
   return board;
 };
 const remove = async id => {
-  const success = DB.removeBoard(id);
+  const success = await Board.findByIdAndRemove(id);
 
   if (!success) {
     throw createError(
