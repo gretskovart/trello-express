@@ -1,7 +1,3 @@
-function getRandomItemFromArray(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
 function hidePassword(obj) {
   if (!obj.password) {
     return obj;
@@ -12,4 +8,4 @@ function hidePassword(obj) {
   return { ...obj, password };
 }
 
-module.exports = { getRandomItemFromArray, hidePassword };
+module.exports = { hidePassword };
