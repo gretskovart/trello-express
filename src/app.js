@@ -6,6 +6,7 @@ const createError = require('http-errors');
 const { NOT_FOUND } = require('http-status-codes');
 const requestLogMiddleware = require('./common/request-log-middleware');
 const errorLogMiddleware = require('./common/error-log-middleware');
+const checkTokenMiddleware = require('./common/check-token-middleware');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
@@ -27,9 +28,9 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-app.use('/users', userRouter);
-app.use('/boards', boardRouter);
-boardRouter.use('/:boardId/tasks', taskRouter);
+app.use('/users', checkTokenMiddleware, userRouter);
+app.use('/boards', checkTokenMiddleware, boardRouter);
+boardRouter.use('/:boardId/tasks', checkTokenMiddleware, taskRouter);
 app.use('/login', loginRouter);
 app.use('*', (req, res, next) =>
   next(createError(NOT_FOUND, 'Error: this route is undefined!'))

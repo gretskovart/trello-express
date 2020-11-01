@@ -6,7 +6,7 @@ router.route('/').post(async (req, res, next) => {
     const user = await loginService.getUser(req.body);
     const token = await loginService.signToken(user);
 
-    res.send(token);
+    res.send({ token });
   } catch (error) {
     return next(error);
   }
