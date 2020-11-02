@@ -1,7 +1,9 @@
 const {
   BAD_REQUEST,
   NOT_FOUND,
-  INTERNAL_SERVER_ERROR
+  INTERNAL_SERVER_ERROR,
+  FORBIDDEN,
+  UNAUTHORIZED
 } = require('http-status-codes');
 const logger = require('./logger');
 const errorLogger = logger.get('errorLogger');
@@ -21,7 +23,12 @@ function errorLogMiddleware(err, req, res, next) {
 
   if (err instanceof SyntaxError) {
     errorLogger.error(stack || message);
-  } else if (statusCode === BAD_REQUEST || statusCode === NOT_FOUND) {
+  } else if (
+    statusCode === BAD_REQUEST ||
+    statusCode === NOT_FOUND ||
+    statusCode === FORBIDDEN ||
+    statusCode === UNAUTHORIZED
+  ) {
     errorLogger.error(message);
     res.status(statusCode).send(message);
   } else if (err) {
